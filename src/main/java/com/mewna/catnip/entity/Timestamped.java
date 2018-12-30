@@ -37,7 +37,12 @@ import java.time.OffsetDateTime;
  * @since 10/28/18.
  */
 public interface Timestamped {
-    default OffsetDateTime parseTimestamp(@Nullable final CharSequence raw) {
+    
+    static OffsetDateTime parse(@Nullable final CharSequence raw) {
         return raw == null ? null : OffsetDateTime.parse(raw);
+    }
+    
+    default OffsetDateTime parseTimestamp(@Nullable final CharSequence raw) {
+        return parse(raw);
     }
 }

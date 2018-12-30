@@ -28,6 +28,7 @@
 package com.mewna.catnip.entity.guild;
 
 import com.mewna.catnip.entity.Snowflake;
+import org.immutables.value.Value.Immutable;
 
 import javax.annotation.CheckReturnValue;
 
@@ -37,6 +38,7 @@ import javax.annotation.CheckReturnValue;
  * @author amy
  * @since 10/4/18.
  */
+@Immutable
 public interface UnavailableGuild extends Snowflake {
     /**
      * @return Whether the guild is unavailable.

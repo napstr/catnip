@@ -28,7 +28,6 @@
 package com.mewna.catnip.shard;
 
 import com.mewna.catnip.Catnip;
-import com.mewna.catnip.entity.impl.PresenceImpl;
 import com.mewna.catnip.entity.user.Presence;
 import com.mewna.catnip.extension.Extension;
 import com.mewna.catnip.extension.hook.CatnipHook;
@@ -80,7 +79,7 @@ public class CatnipShard extends AbstractVerticle {
     
     private final byte[] decompressBuffer = new byte[1024];
     private final Deque<JsonObject> messageQueue = new ArrayDeque<>();
-    private final Deque<PresenceImpl> presenceQueue = new ArrayDeque<>();
+    private final Deque<Presence> presenceQueue = new ArrayDeque<>();
     
     private volatile ShardState state;
     private volatile Presence currentPresence;
@@ -162,7 +161,7 @@ public class CatnipShard extends AbstractVerticle {
                         break;
                     }
                     presenceRateLimitRecheckQueued = false;
-                    final PresenceImpl update = presenceQueue.pop();
+                    final Presence update = presenceQueue.pop();
                     final JsonObject object = new JsonObject()
                             .put("op", GatewayOp.STATUS_UPDATE.opcode())
                             .put("d", update.asJson());
@@ -202,8 +201,8 @@ public class CatnipShard extends AbstractVerticle {
     public void stop() {
     }
     
-    private void handlePresenceUpdate(final Message<PresenceImpl> message) {
-        final PresenceImpl impl = message.body();
+    private void handlePresenceUpdate(final Message<Presence> message) {
+        final Presence impl = message.body();
         if(impl == null) {
             message.reply(currentPresence);
             return;
@@ -418,7 +417,7 @@ public class CatnipShard extends AbstractVerticle {
         catnip.eventBus().publish(websocketMessagePollAddress(), null);
     }
     
-    private void handlePresenceUpdateQueue(final Message<PresenceImpl> msg) {
+    private void handlePresenceUpdateQueue(final Message<Presence> msg) {
         presenceQueue.addLast(msg.body());
         catnip.eventBus().publish(websocketMessagePresenceUpdatePollAddress(), null);
     }
@@ -605,7 +604,7 @@ public class CatnipShard extends AbstractVerticle {
                         .put("$device", "catnip")
                 );
         if(presence != null) {
-            data.put("presence", ((PresenceImpl) presence).asJson());
+            data.put("presence", presence.asJson());
         }
         return basePayload(GatewayOp.IDENTIFY, data);
     }

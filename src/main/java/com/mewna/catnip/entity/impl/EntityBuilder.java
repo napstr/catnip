@@ -28,6 +28,7 @@
 package com.mewna.catnip.entity.impl;
 
 import com.mewna.catnip.Catnip;
+import com.mewna.catnip.entity.Timestamped;
 import com.mewna.catnip.entity.channel.*;
 import com.mewna.catnip.entity.channel.Channel.ChannelType;
 import com.mewna.catnip.entity.guild.*;
@@ -896,7 +897,7 @@ public final class EntityBuilder {
                 .widgetEnabled(data.getBoolean("widget_enabled", false))
                 .widgetChannelIdAsLong(widgetChannelId == null ? 0 : Long.parseUnsignedLong(widgetChannelId))
                 .systemChannelIdAsLong(systemChannelId == null ? 0 : Long.parseUnsignedLong(systemChannelId))
-                .joinedAt(data.getString("joined_at"))
+                .joinedAt(Timestamped.parse(data.getString("joined_at")))
                 .large(data.getBoolean("large", false))
                 .unavailable(data.getBoolean("unavailable", false))
                 .memberCount(data.getInteger("member_count", -1))
