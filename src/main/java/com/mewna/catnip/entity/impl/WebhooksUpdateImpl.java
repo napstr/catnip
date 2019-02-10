@@ -49,13 +49,13 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class WebhooksUpdateImpl implements WebhooksUpdate, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long channelIdAsLong;
     private long guildIdAsLong;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

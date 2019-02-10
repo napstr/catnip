@@ -49,7 +49,7 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class VoiceRegionImpl implements VoiceRegion, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String id;
     private String name;
@@ -60,6 +60,6 @@ public class VoiceRegionImpl implements VoiceRegion, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

@@ -50,12 +50,12 @@ import java.util.List;
 @AllArgsConstructor
 public class ResumedImpl implements Resumed, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private List<String> trace;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

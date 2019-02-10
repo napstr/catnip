@@ -47,7 +47,7 @@ import javax.annotation.Nonnull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RoleImpl implements Role, RequiresCatnip {
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long guildIdAsLong;
@@ -61,7 +61,7 @@ public class RoleImpl implements Role, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override

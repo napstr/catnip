@@ -28,11 +28,12 @@
 package com.mewna.catnip.entity.user;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.mewna.catnip.entity.impl.PresenceImpl;
-import com.mewna.catnip.entity.impl.PresenceImpl.ActivityImpl;
+import com.mewna.catnip.entity.RequiresCatnip;
+import io.vertx.core.json.JsonObject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
+import org.immutables.value.Value;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnegative;
@@ -48,8 +49,10 @@ import java.util.Set;
  * @since 9/21/18.
  */
 @SuppressWarnings("unused")
+@Value.Immutable
 @JsonDeserialize(as = PresenceImpl.class)
-public interface Presence {
+public interface Presence extends RequiresCatnip {
+    
     @Nonnull
     @CheckReturnValue
     static Presence of(@Nonnull final OnlineStatus status, @Nullable final Activity activity) {
@@ -82,6 +85,35 @@ public interface Presence {
     
     @Nullable
     Activity activity();
+    
+    @Nonnull
+    @CheckReturnValue
+    default JsonObject asJson() {
+        final OnlineStatus status = status();
+        final Activity activity = activity();
+        final JsonObject innerData = new JsonObject()
+                .put("status", status.asString());
+        if(status == OnlineStatus.IDLE) {
+            innerData.put("since", System.currentTimeMillis());
+            innerData.put("afk", true);
+        } else {
+            innerData.putNull("since");
+            innerData.put("afk", false);
+        }
+        if(activity != null) {
+            final JsonObject game = new JsonObject()
+                    .put("name", activity.name())
+                    .put("type", activity.type().id());
+            if(activity.url() != null) {
+                game.put("url", activity.url());
+            }
+            innerData.put("game", game);
+        } else {
+            innerData.putNull("game");
+        }
+        
+        return innerData;
+    }
     
     @Accessors(fluent = true, chain = true)
     enum OnlineStatus {
@@ -177,12 +209,14 @@ public interface Presence {
         }
     }
     
+    @Value.Immutable
     interface ActivityTimestamps {
         long start();
         
         long end();
     }
     
+    @Value.Immutable
     interface ActivityParty {
         @Nullable
         String id();
@@ -192,6 +226,7 @@ public interface Presence {
         int maxSize();
     }
     
+    @Value.Immutable
     interface ActivityAssets {
         @Nullable
         String largeImage();
@@ -206,6 +241,7 @@ public interface Presence {
         String smallText();
     }
     
+    @Value.Immutable
     interface ActivitySecrets {
         @Nullable
         String join();
@@ -218,6 +254,7 @@ public interface Presence {
     }
     
     @JsonDeserialize(as = ActivityImpl.class)
+    @Value.Immutable
     interface Activity {
         @Nonnull
         @CheckReturnValue
@@ -261,8 +298,11 @@ public interface Presence {
             }
             return Long.toUnsignedString(id);
         }
-        
-        long applicationIdAsLong();
+    
+        @Value.Default
+        default long applicationIdAsLong() {
+            return 0;
+        }
         
         @Nullable
         String details();
@@ -278,8 +318,11 @@ public interface Presence {
         
         @Nullable
         ActivitySecrets secrets();
-        
-        boolean instance();
+    
+        @Value.Default
+        default boolean instance() {
+            return false;
+        }
         
         @Nullable
         Set<ActivityFlag> flags();

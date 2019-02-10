@@ -28,24 +28,25 @@
 package com.mewna.catnip.entity.guild;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.mewna.catnip.cache.view.CacheView;
 import com.mewna.catnip.cache.view.NamedCacheView;
 import com.mewna.catnip.entity.Snowflake;
+import com.mewna.catnip.entity.Timestamped;
 import com.mewna.catnip.entity.channel.GuildChannel;
 import com.mewna.catnip.entity.channel.Webhook;
-import com.mewna.catnip.entity.impl.GuildImpl;
 import com.mewna.catnip.entity.misc.CreatedInvite;
 import com.mewna.catnip.entity.misc.Emoji.CustomEmoji;
 import com.mewna.catnip.entity.user.VoiceState;
 import com.mewna.catnip.entity.util.ImageOptions;
 import com.mewna.catnip.entity.util.Permission;
+import com.mewna.catnip.util.CDNFormat;
 import com.mewna.catnip.util.PermissionUtil;
 import com.mewna.catnip.util.Utils;
 import io.vertx.core.json.JsonObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.immutables.value.Value;
 
 import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnegative;
@@ -67,8 +68,8 @@ import java.util.concurrent.CompletionStage;
  * @since 9/6/18
  */
 @SuppressWarnings("unused")
-@JsonDeserialize(as = GuildImpl.class)
-public interface Guild extends Snowflake {
+@Value.Immutable
+public interface Guild extends Snowflake, Timestamped {
     /**
      * @return The guild's name.
      */
@@ -92,7 +93,9 @@ public interface Guild extends Snowflake {
      */
     @Nullable
     @CheckReturnValue
-    String iconUrl(@Nonnull final ImageOptions options);
+    default String iconUrl(@Nonnull final ImageOptions options) {
+        return CDNFormat.iconUrl(id(), icon(), options);
+    }
     
     /**
      * @return The CDN URL for the guild's icon.
@@ -119,7 +122,9 @@ public interface Guild extends Snowflake {
      */
     @Nullable
     @CheckReturnValue
-    String splashUrl(@Nonnull ImageOptions options);
+    default String splashUrl(@Nonnull final ImageOptions options) {
+        return CDNFormat.splashUrl(id(), splash(), options);
+    }
     
     /**
      * @return The CDN URL of the guild's splash image.
@@ -344,7 +349,15 @@ public interface Guild extends Snowflake {
      * @return The date/time that the current user joined the guild at.
      */
     @CheckReturnValue
-    OffsetDateTime joinedAt();
+    default OffsetDateTime joinedAt() {
+        return parseTimestamp(joinedAtAsString());
+    }
+    
+    /**
+     * @return The date/time that the current user joined the guild at.
+     */
+    @CheckReturnValue
+    String joinedAtAsString();
     
     /**
      * @return Whether or not this guild is considered "large."
@@ -356,6 +369,7 @@ public interface Guild extends Snowflake {
      * @return Whether or not this guild is currently unavailable.
      */
     @CheckReturnValue
+    @Value.Default
     default boolean unavailable() {
         return catnip().isUnavailable(id());
     }
@@ -365,6 +379,7 @@ public interface Guild extends Snowflake {
      */
     @Nonnegative
     @CheckReturnValue
+    @Value.Default
     default long memberCount() {
         return members().size();
     }

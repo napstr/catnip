@@ -51,7 +51,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 public class CreatedInviteImpl implements CreatedInvite, RequiresCatnip, Timestamped {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String code;
     private Inviter inviter;
@@ -69,9 +69,10 @@ public class CreatedInviteImpl implements CreatedInvite, RequiresCatnip, Timesta
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
+    @Override
     @Nonnull
     public OffsetDateTime createdAt() {
         return parseTimestamp(createdAt);

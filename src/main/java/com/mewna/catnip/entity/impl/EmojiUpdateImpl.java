@@ -51,17 +51,18 @@ import java.util.List;
 @AllArgsConstructor
 public class EmojiUpdateImpl implements EmojiUpdate, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long guildIdAsLong;
     private List<CustomEmoji> emojis;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         for(final CustomEmoji emoji : emojis) {
-            if(emoji instanceof RequiresCatnip)
+            if(emoji instanceof RequiresCatnip) {
                 ((RequiresCatnip) emoji).catnip(catnip);
+            }
         }
     }
 }

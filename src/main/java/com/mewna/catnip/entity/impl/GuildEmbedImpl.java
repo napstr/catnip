@@ -49,13 +49,13 @@ import javax.annotation.Nonnull;
 @Accessors(fluent = true, chain = true)
 public class GuildEmbedImpl implements GuildEmbed {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long channelIdAsLong;
     private boolean enabled;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

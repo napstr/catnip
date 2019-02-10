@@ -49,7 +49,7 @@ import javax.annotation.Nonnull;
 @Accessors(fluent = true)
 public class GatewayInfoImpl implements GatewayInfo, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String url;
     private int shards;
@@ -60,6 +60,6 @@ public class GatewayInfoImpl implements GatewayInfo, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

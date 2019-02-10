@@ -50,7 +50,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class PresenceUpdateImpl implements PresenceUpdate, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long guildIdAsLong;
@@ -62,7 +62,8 @@ public class PresenceUpdateImpl implements PresenceUpdate, RequiresCatnip {
     private OnlineStatus webStatus;
     private OnlineStatus desktopStatus;
     
+    @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

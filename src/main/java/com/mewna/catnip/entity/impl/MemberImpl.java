@@ -52,7 +52,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class MemberImpl implements Member, RequiresCatnip, Timestamped {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long guildIdAsLong;
@@ -71,7 +71,7 @@ public class MemberImpl implements Member, RequiresCatnip, Timestamped {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override

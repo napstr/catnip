@@ -51,7 +51,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class PartialMemberImpl implements PartialMember, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private User user;
     private long guildIdAsLong;
@@ -60,7 +60,7 @@ public class PartialMemberImpl implements PartialMember, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(user instanceof RequiresCatnip) {
             ((RequiresCatnip) user).catnip(catnip);
         }

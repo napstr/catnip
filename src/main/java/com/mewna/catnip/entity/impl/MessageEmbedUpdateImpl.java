@@ -51,7 +51,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MessageEmbedUpdateImpl implements MessageEmbedUpdate, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long guildIdAsLong;
@@ -60,6 +60,6 @@ public class MessageEmbedUpdateImpl implements MessageEmbedUpdate, RequiresCatni
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

@@ -50,7 +50,7 @@ import javax.annotation.Nonnull;
 @Accessors(fluent = true)
 public class OverrideUpdateInfoImpl implements OverrideUpdateInfo, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String roleName;
     private OverrideType overrideType;
@@ -58,6 +58,6 @@ public class OverrideUpdateInfoImpl implements OverrideUpdateInfo, RequiresCatni
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

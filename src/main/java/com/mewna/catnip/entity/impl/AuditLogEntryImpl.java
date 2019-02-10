@@ -55,7 +55,7 @@ import java.util.List;
 @Accessors(fluent = true)
 public class AuditLogEntryImpl implements AuditLogEntry, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long targetIdAsLong;
@@ -68,7 +68,7 @@ public class AuditLogEntryImpl implements AuditLogEntry, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(user instanceof RequiresCatnip) {
             ((RequiresCatnip) user).catnip(catnip);
         }

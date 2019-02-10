@@ -51,7 +51,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ApplicationInfoImpl implements ApplicationInfo, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private String icon;
@@ -64,7 +64,7 @@ public class ApplicationInfoImpl implements ApplicationInfo, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(owner instanceof RequiresCatnip) {
             ((RequiresCatnip) owner).catnip(catnip);
         }

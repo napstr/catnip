@@ -49,13 +49,14 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class BulkRemovedReactionsImpl implements BulkRemovedReactions, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String channelId;
     private String messageId;
     private String guildId;
     
+    @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

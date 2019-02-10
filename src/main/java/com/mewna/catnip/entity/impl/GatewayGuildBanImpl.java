@@ -50,14 +50,15 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class GatewayGuildBanImpl implements GatewayGuildBan, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long guildIdAsLong;
     
     private User user;
     
+    @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(user instanceof RequiresCatnip) {
             ((RequiresCatnip) user).catnip(catnip);
         }

@@ -49,13 +49,13 @@ import javax.annotation.Nonnull;
 @Accessors(fluent = true)
 public class MemberPruneInfoImpl implements MemberPruneInfo, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private int deleteMemberDays;
     private int removedMembersCount;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

@@ -52,7 +52,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 public class ChannelPinsUpdateImpl implements ChannelPinsUpdate, RequiresCatnip, Timestamped {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long channelIdAsLong;
     @JsonProperty
@@ -66,6 +66,6 @@ public class ChannelPinsUpdateImpl implements ChannelPinsUpdate, RequiresCatnip,
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

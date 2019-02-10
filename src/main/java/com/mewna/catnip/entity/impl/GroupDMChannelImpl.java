@@ -51,7 +51,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GroupDMChannelImpl implements GroupDMChannel, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private List<User> recipients;
@@ -61,7 +61,7 @@ public class GroupDMChannelImpl implements GroupDMChannel, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         for(final User recipient : recipients) {
             if(recipient instanceof RequiresCatnip) {
                 ((RequiresCatnip) recipient).catnip(catnip);

@@ -57,7 +57,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class InviteImpl implements Invite, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String code;
     private Inviter inviter;
@@ -68,7 +68,7 @@ public class InviteImpl implements Invite, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override
@@ -93,7 +93,8 @@ public class InviteImpl implements Invite, RequiresCatnip {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class InviterImpl implements Inviter, RequiresCatnip {
-        private transient Catnip catnip;
+        @JsonIgnore
+        private transient Catnip injectCatnip;
         
         private long idAsLong;
         private String username;
@@ -102,7 +103,7 @@ public class InviteImpl implements Invite, RequiresCatnip {
         
         @Override
         public void catnip(@Nonnull final Catnip catnip) {
-            this.catnip = catnip;
+            this.injectCatnip = catnip;
         }
         
         @Override
@@ -170,7 +171,8 @@ public class InviteImpl implements Invite, RequiresCatnip {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class InviteGuildImpl implements InviteGuild, RequiresCatnip {
-        private transient Catnip catnip;
+        @JsonIgnore
+        private transient Catnip injectCatnip;
         
         private long idAsLong;
         private String name;
@@ -181,7 +183,7 @@ public class InviteImpl implements Invite, RequiresCatnip {
         
         @Override
         public void catnip(@Nonnull final Catnip catnip) {
-            this.catnip = catnip;
+            this.injectCatnip = catnip;
         }
         
         @Nullable
@@ -219,7 +221,9 @@ public class InviteImpl implements Invite, RequiresCatnip {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class InviteChannelImpl implements InviteChannel, RequiresCatnip {
-        private transient Catnip catnip;
+    
+        @JsonIgnore
+        private transient Catnip injectCatnip;
         
         private long idAsLong;
         private String name;
@@ -227,7 +231,7 @@ public class InviteImpl implements Invite, RequiresCatnip {
         
         @Override
         public void catnip(@Nonnull final Catnip catnip) {
-            this.catnip = catnip;
+            this.injectCatnip = catnip;
         }
         
         @Override

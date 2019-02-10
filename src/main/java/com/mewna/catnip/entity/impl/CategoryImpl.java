@@ -51,7 +51,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CategoryImpl implements Category, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private String name;
@@ -62,7 +62,7 @@ public class CategoryImpl implements Category, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         for(final PermissionOverride override : overrides) {
             if(override instanceof RequiresCatnip) {
                 ((RequiresCatnip) override).catnip(catnip);

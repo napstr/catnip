@@ -49,7 +49,7 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class DeletedMessageImpl implements DeletedMessage, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long channelIdAsLong;
@@ -57,7 +57,7 @@ public class DeletedMessageImpl implements DeletedMessage, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override

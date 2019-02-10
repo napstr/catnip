@@ -49,13 +49,14 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class VoiceServerUpdateImpl implements VoiceServerUpdate, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long guildIdAsLong;
     private String token;
     private String endpoint;
     
+    @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

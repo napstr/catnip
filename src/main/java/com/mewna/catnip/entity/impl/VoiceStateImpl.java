@@ -49,7 +49,7 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class VoiceStateImpl implements VoiceState, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     @JsonProperty
     private long guildIdAsLong;
@@ -70,8 +70,9 @@ public class VoiceStateImpl implements VoiceState, RequiresCatnip {
     @JsonProperty
     private boolean suppress;
     
+    @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override

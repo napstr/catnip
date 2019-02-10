@@ -58,7 +58,7 @@ import java.util.List;
 @AllArgsConstructor
 public class MessageImpl implements Message, RequiresCatnip, Timestamped {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long channelIdAsLong;
@@ -86,11 +86,11 @@ public class MessageImpl implements Message, RequiresCatnip, Timestamped {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(author instanceof RequiresCatnip) {
             ((RequiresCatnip) author).catnip(catnip);
         }
-        for(User user: mentionedUsers) {
+        for(final User user : mentionedUsers) {
           if(user instanceof RequiresCatnip) {
               ((RequiresCatnip) user).catnip(catnip);
           }
@@ -147,7 +147,8 @@ public class MessageImpl implements Message, RequiresCatnip, Timestamped {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AttachmentImpl implements Attachment, RequiresCatnip {
-        private transient Catnip catnip;
+        @JsonIgnore
+        private transient Catnip injectCatnip;
         
         private long idAsLong;
         private String fileName;
@@ -159,7 +160,7 @@ public class MessageImpl implements Message, RequiresCatnip, Timestamped {
         
         @Override
         public void catnip(@Nonnull final Catnip catnip) {
-            this.catnip = catnip;
+            this.injectCatnip = catnip;
         }
         
         @Override

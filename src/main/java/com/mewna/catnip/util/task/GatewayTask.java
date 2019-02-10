@@ -28,7 +28,7 @@
 package com.mewna.catnip.util.task;
 
 import com.mewna.catnip.Catnip;
-import com.mewna.catnip.entity.impl.PresenceImpl;
+import com.mewna.catnip.entity.user.Presence;
 import io.vertx.core.json.JsonObject;
 
 import javax.annotation.Nonnull;
@@ -81,8 +81,8 @@ public class GatewayTask<T> extends QueueTask<T> {
         return new GatewayTask<>(new ArrayDeque<>(), action, catnip, id, 60_000, 110);
     }
     
-    public static GatewayTask<PresenceImpl> gatewayPresenceTask(@Nonnull final Catnip catnip, @Nonnull final String id,
-                                                                @Nonnull final Consumer<PresenceImpl> action) {
+    public static GatewayTask<Presence> gatewayPresenceTask(@Nonnull final Catnip catnip, @Nonnull final String id,
+                                                            @Nonnull final Consumer<Presence> action) {
         return new GatewayTask<>(new ArrayDeque<>(), action, catnip, id, 60_000, 5);
     }
 }

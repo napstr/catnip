@@ -50,7 +50,7 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class WebhookImpl implements Webhook, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long guildIdAsLong;
@@ -62,7 +62,7 @@ public class WebhookImpl implements Webhook, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(user instanceof RequiresCatnip) {
             ((RequiresCatnip) user).catnip(catnip);
         }

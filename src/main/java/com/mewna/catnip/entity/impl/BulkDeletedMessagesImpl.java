@@ -50,7 +50,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BulkDeletedMessagesImpl implements BulkDeletedMessages, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private List<String> ids;
     private long channelIdAsLong;
@@ -58,7 +58,7 @@ public class BulkDeletedMessagesImpl implements BulkDeletedMessages, RequiresCat
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override

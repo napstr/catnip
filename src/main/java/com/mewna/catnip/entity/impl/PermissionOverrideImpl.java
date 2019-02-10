@@ -49,7 +49,7 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class PermissionOverrideImpl implements PermissionOverride, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private OverrideType type;
@@ -58,7 +58,7 @@ public class PermissionOverrideImpl implements PermissionOverride, RequiresCatni
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override

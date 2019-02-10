@@ -33,6 +33,8 @@ import com.mewna.catnip.util.CatnipMeta;
 import io.vertx.core.json.JsonObject;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Objects;
 
 /**
  * A single entity in catnip.
@@ -80,7 +82,28 @@ public interface Entity {
      * @return The catnip instance of this entity.
      */
     @JsonIgnore
-    Catnip catnip();
+    default Catnip catnip() {
+        return Objects.requireNonNull(injectCatnip(), "Looks like _someone_ forgot to inject the catnip. Anyways, it's null. Better luck next time!");
+    }
+    
+    /**
+     * Doughnut use this method.
+     * This method exists in parallel to {@link Entity#catnip()} so that we can trick Jackson and Immutables.org
+     * to allow us to inject the catnip instance after deserialization has been run, but before returning
+     * the deserialized object. Sadly that requires to set the {@link Nullable} annotation
+     * on the generated method, which is technically correct, as due to injection we don't have a **strict
+     * compile time guarantee** that catnip will always be set on all deserialized entities.
+     * <p>
+     * However, we do have tests in place to ensure that catnip is always injected, so users are free to assume that
+     * the catnip entity is always not null and **should always** use {@link Entity#catnip()} instead.
+     *
+     * @return The catnip instance of this entity. Maybe.
+     *
+     * @throws NullPointerException if it's null
+     */
+    @JsonIgnore
+    @Nullable
+    Catnip injectCatnip();
     
     /**
      * Map this entity instance to a JSON object.

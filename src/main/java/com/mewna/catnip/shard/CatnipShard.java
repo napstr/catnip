@@ -28,7 +28,6 @@
 package com.mewna.catnip.shard;
 
 import com.mewna.catnip.Catnip;
-import com.mewna.catnip.entity.impl.PresenceImpl;
 import com.mewna.catnip.entity.misc.GatewayInfo;
 import com.mewna.catnip.entity.user.Presence;
 import com.mewna.catnip.extension.Extension;
@@ -128,7 +127,7 @@ public class CatnipShard extends AbstractVerticle {
     private final String voiceStateUpdateQueue;
     
     private final GatewayTask<JsonObject> sendTask;
-    private final GatewayTask<PresenceImpl> presenceTask;
+    private final GatewayTask<Presence> presenceTask;
     
     public CatnipShard(@Nonnull final Catnip catnip, @Nonnegative final int id, @Nonnegative final int limit,
                        @Nullable final Presence presence) {
@@ -208,13 +207,13 @@ public class CatnipShard extends AbstractVerticle {
         sendTask.offer(basePayload(GatewayOp.VOICE_STATE_UPDATE, message.body()));
     }
     
-    private void handlePresenceUpdate(final Message<PresenceImpl> message) {
-        final PresenceImpl impl = message.body();
-        if(impl == null) {
+    private void handlePresenceUpdate(final Message<Presence> message) {
+        final Presence pres = message.body();
+        if(pres == null) {
             message.reply(currentPresence);
             return;
         }
-        presenceTask.offer(impl);
+        presenceTask.offer(pres);
     }
     
     private void handleControlMessage(final Message<ShardControlMessage> msg) {
@@ -557,7 +556,7 @@ public class CatnipShard extends AbstractVerticle {
                         .put("$device", "catnip")
                 );
         if(presence != null) {
-            data.put("presence", ((PresenceImpl) presence).asJson());
+            data.put("presence", presence.asJson());
         }
         return basePayload(GatewayOp.IDENTIFY, data);
     }

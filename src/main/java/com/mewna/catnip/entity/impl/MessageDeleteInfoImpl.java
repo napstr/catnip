@@ -49,13 +49,13 @@ import javax.annotation.Nonnull;
 @Accessors(fluent = true)
 public class MessageDeleteInfoImpl implements MessageDeleteInfo, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long channelIdAsLong;
     private int deletedMessagesCount;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

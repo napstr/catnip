@@ -49,14 +49,15 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class TypingUserImpl implements TypingUser, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long channelIdAsLong;
     private long guildIdAsLong;
     private long timestamp;
     
+    @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
 }

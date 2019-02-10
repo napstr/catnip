@@ -53,7 +53,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class ReadyImpl implements Ready, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private int version;
     private User user;
@@ -62,7 +62,7 @@ public class ReadyImpl implements Ready, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(user instanceof RequiresCatnip) {
             ((RequiresCatnip) user).catnip(catnip);
         }

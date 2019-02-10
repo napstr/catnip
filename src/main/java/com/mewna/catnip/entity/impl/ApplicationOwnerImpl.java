@@ -52,7 +52,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class ApplicationOwnerImpl implements ApplicationOwner, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private String username;
@@ -66,7 +66,9 @@ public class ApplicationOwnerImpl implements ApplicationOwner, RequiresCatnip {
     }
     
     @Override
-    public void catnip(@Nonnull final Catnip catnip) { this.catnip = catnip; }
+    public void catnip(@Nonnull final Catnip catnip) {
+        this.injectCatnip = catnip;
+    }
     
     @Override
     @CheckReturnValue
@@ -74,24 +76,28 @@ public class ApplicationOwnerImpl implements ApplicationOwner, RequiresCatnip {
         return avatar != null && avatar.startsWith("a_");
     }
     
+    @Override
     @Nonnull
     @CheckReturnValue
     public String defaultAvatarUrl() {
         return CDNFormat.defaultAvatarUrl(discriminator);
     }
     
+    @Override
     @Nullable
     @CheckReturnValue
     public String avatarUrl(@Nonnull final ImageOptions options) {
         return CDNFormat.avatarUrl(id(), avatar, options);
     }
     
+    @Override
     @Nullable
     @CheckReturnValue
     public String avatarUrl() {
         return avatarUrl(defaultOptions());
     }
     
+    @Override
     @Nonnull
     @CheckReturnValue
     public String effectiveAvatarUrl(@Nonnull final ImageOptions options) {
@@ -101,6 +107,7 @@ public class ApplicationOwnerImpl implements ApplicationOwner, RequiresCatnip {
         );
     }
     
+    @Override
     @Nonnull
     @CheckReturnValue
     public String effectiveAvatarUrl() {

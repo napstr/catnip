@@ -49,7 +49,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TextChannelImpl implements TextChannel, RequiresCatnip {
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private String name;
@@ -63,7 +63,7 @@ public class TextChannelImpl implements TextChannel, RequiresCatnip {
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         for(final PermissionOverride override : overrides) {
             if(override instanceof RequiresCatnip) {
                 ((RequiresCatnip) override).catnip(catnip);

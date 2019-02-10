@@ -48,7 +48,6 @@ import com.mewna.catnip.entity.impl.InviteImpl.InviteGuildImpl;
 import com.mewna.catnip.entity.impl.InviteImpl.InviterImpl;
 import com.mewna.catnip.entity.impl.MessageImpl.AttachmentImpl;
 import com.mewna.catnip.entity.impl.MessageImpl.ReactionImpl;
-import com.mewna.catnip.entity.impl.PresenceImpl.ActivityImpl;
 import com.mewna.catnip.entity.message.*;
 import com.mewna.catnip.entity.message.Embed.EmbedType;
 import com.mewna.catnip.entity.message.Message.Attachment;
@@ -73,8 +72,7 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Created by napster on 01.01.19.
@@ -99,14 +97,16 @@ class CodecTest {
         // If you end up here with a really bad and undescriptive message of a test failing, I'm sorry.
         // As of adding this test, none of the usual suspects/proper testing libs that make nice messages upon failure
         // like JUnit, Hamcrest, AssertJ, Shazamcrest had a proper deep equals feature.
-        assertTrue(DeepEquals.deepEquals(entity, deserialized, deepEqualsOptions));
+        assertTrue(DeepEquals.deepEquals(entity, deserialized, deepEqualsOptions),
+                "Deserialized entity looks different from the original one");
         
         //check equals implementation
 //        assertEquals(entity, deserialized); TODO ideally all entities should have an equals method
         
         //check that our catnip has been set on the entity
         if(deserialized instanceof RequiresCatnip) {
-            assertSame(thisCatnip, ((RequiresCatnip) deserialized).catnip());
+            assertNotNull(((Entity) deserialized).catnip(), "Catnip was not injected");
+            assertSame(thisCatnip, ((RequiresCatnip) deserialized).catnip(), "Wrong catnip was injected");
         } //TODO run same check on nested entities and collections of nested entities
     }
     
@@ -114,7 +114,7 @@ class CodecTest {
     void applicationInfo() {
         final Catnip mocknip = Mockito.mock(Catnip.class);
         final ApplicationInfo applicationInfo = ApplicationInfoImpl.builder()
-                .catnip(mocknip)
+                .injectCatnip(mocknip)
                 .idAsLong(randomPositiveLong())
                 .name("SAMUEL L. IPSUM bot")
                 .icon("whatever.jpeg")
@@ -142,7 +142,7 @@ class CodecTest {
     void auditLogEntry() {
         final Catnip mocknip = mockNip();
         final AuditLogEntry auditLogEntry = AuditLogEntryImpl.builder()
-                .catnip(mocknip)
+                .injectCatnip(mocknip)
                 .idAsLong(randomPositiveLong())
                 .targetIdAsLong(randomPositiveLong())
                 .user(user(mocknip))
@@ -159,7 +159,7 @@ class CodecTest {
     @Test
     void bulkDeletedMessages() {
         final BulkDeletedMessages bulkDeletedMessages = BulkDeletedMessagesImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .ids(Arrays.asList(
                         Long.toString(randomPositiveLong()),
                         Long.toString(randomPositiveLong())
@@ -174,7 +174,7 @@ class CodecTest {
     @Test
     void bulkRemovedReactions() {
         final BulkRemovedReactions bulkRemovedReactions = BulkRemovedReactionsImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .channelId(randomPositiveLongAsString())
                 .messageId(randomPositiveLongAsString())
                 .guildId(randomPositiveLongAsString())
@@ -187,7 +187,7 @@ class CodecTest {
     void category() {
         final Catnip mockNip = mockNip();
         final Category category = CategoryImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .idAsLong(randomPositiveLong())
                 .name("this is a category")
                 .guildIdAsLong(randomPositiveLong())
@@ -202,7 +202,7 @@ class CodecTest {
     @Test
     void channelPinsUpdate() {
         final ChannelPinsUpdate channelPinsUpdate = ChannelPinsUpdateImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .channelIdAsLong(randomPositiveLong())
                 .lastPinTimestamp(OffsetDateTime.now().toString())
                 .build();
@@ -214,7 +214,7 @@ class CodecTest {
     void createdInvite() {
         final Catnip mockNip = mockNip();
         final CreatedInvite createdInvite = CreatedInviteImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .code("qwert")
                 .inviter(inviter(mockNip))
                 .guild(inviteGuild(mockNip))
@@ -239,7 +239,7 @@ class CodecTest {
     @Test
     void deletedMessage() {
         final DeletedMessage deletedMessage = DeletedMessageImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .channelIdAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
@@ -256,7 +256,7 @@ class CodecTest {
     void emojiUpdate() {
         final Catnip mockNip = mockNip();
         final EmojiUpdate emojiUpdate = EmojiUpdateImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .guildIdAsLong(randomPositiveLong())
                 .emojis(Arrays.asList(customEmoji(mockNip), customEmoji(mockNip)))
                 .build();
@@ -268,7 +268,7 @@ class CodecTest {
     void gatewayGuildBan() {
         final Catnip mockNip = mockNip();
         final GatewayGuildBan gatewayGuildBan = GatewayGuildBanImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .guildIdAsLong(randomPositiveLong())
                 .user(user(mockNip))
                 .build();
@@ -279,7 +279,7 @@ class CodecTest {
     @Test
     void gatewayInfo() {
         final GatewayInfo gatewayInfo = GatewayInfoImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .url(url())
                 .shards(42)
                 .totalSessions(1337)
@@ -295,7 +295,7 @@ class CodecTest {
     void groupDmChannel() {
         final Catnip mocknip = mockNip();
         final GroupDMChannel groupDMChannel = GroupDMChannelImpl.builder()
-                .catnip(mocknip)
+                .injectCatnip(mocknip)
                 .idAsLong(randomPositiveLong())
                 .recipients(Arrays.asList(user(mocknip)))
                 .icon(imageUrl())
@@ -310,7 +310,7 @@ class CodecTest {
     void guildBan() {
         final Catnip mockNip = mockNip();
         final GuildBan guildBan = GuildBanImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .reason("posting bad memes")
                 .user(user(mockNip))
                 .build();
@@ -321,7 +321,7 @@ class CodecTest {
     @Test
     void guildEmbed() {
         final GuildEmbed guildEmbed = GuildEmbedImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .channelIdAsLong(randomPositiveLong())
                 .enabled(ThreadLocalRandom.current().nextBoolean())
                 .build();
@@ -332,7 +332,7 @@ class CodecTest {
     @Test
     void guild() {
         final Guild guild = GuildImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .name("Best Guild EUW")
                 .icon(imageUrl())
@@ -354,7 +354,7 @@ class CodecTest {
                 .widgetEnabled(ThreadLocalRandom.current().nextBoolean())
                 .widgetChannelIdAsLong(randomPositiveLong())
                 .systemChannelIdAsLong(randomPositiveLong())
-                .joinedAt(OffsetDateTime.now().toString())
+                .joinedAtAsString(OffsetDateTime.now().toString())
                 .large(ThreadLocalRandom.current().nextBoolean())
                 .unavailable(ThreadLocalRandom.current().nextBoolean())
                 .build();
@@ -366,7 +366,7 @@ class CodecTest {
     void invite() {
         final Catnip mocknip = mockNip();
         final Invite invite = InviteImpl.builder()
-                .catnip(mocknip)
+                .injectCatnip(mocknip)
                 .code("asdfg")
                 .inviter(inviter(mocknip))
                 .guild(inviteGuild(mocknip))
@@ -384,7 +384,7 @@ class CodecTest {
     @Test
     void memberPruneInfo() {
         final MemberPruneInfo memberPruneInfo = MemberPruneInfoImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .deleteMemberDays(7)
                 .removedMembersCount(1024)
                 .build();
@@ -395,7 +395,7 @@ class CodecTest {
     @Test
     void messageDeleteInfo() {
         final MessageDeleteInfo messageDeleteInfo = MessageDeleteInfoImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .channelIdAsLong(randomPositiveLong())
                 .deletedMessagesCount(2048)
                 .build();
@@ -407,7 +407,7 @@ class CodecTest {
     void messageEmbedUpdate() {
         final Catnip mockNip = mockNip();
         final MessageEmbedUpdate messageEmbedUpdate = MessageEmbedUpdateImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .idAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
                 .channelIdAsLong(randomPositiveLong())
@@ -421,7 +421,7 @@ class CodecTest {
     void message() {
         final Catnip mockNip = mockNip();
         final Message message = MessageImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .idAsLong(randomPositiveLong())
                 .channelIdAsLong(randomPositiveLong())
                 .author(user(mockNip))
@@ -460,7 +460,7 @@ class CodecTest {
     @Test
     void partialGuild() {
         final PartialGuild partialGuild = PartialGuildImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .name("Best partial guild EUW")
                 .icon(imageUrl())
@@ -475,7 +475,7 @@ class CodecTest {
     void partialMember() {
         final Catnip mockNip = mockNip();
         final PartialMember partialMember = PartialMemberImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .user(user(mockNip))
                 .guildIdAsLong(randomPositiveLong())
                 .roleIds(new HashSet<>(Arrays.asList(randomPositiveLongAsString(), randomPositiveLongAsString())))
@@ -488,7 +488,7 @@ class CodecTest {
     @Test
     void partialRole() {
         final PartialRole partialRole = PartialRoleImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
                 .build();
@@ -505,7 +505,6 @@ class CodecTest {
     void presence() {
         final Catnip mockNip = mockNip();
         final Presence presence = PresenceImpl.builder()
-                .catnip(mockNip)
                 .status(random(OnlineStatus.values()))
                 .activity(activity(mockNip))
                 .mobileStatus(random(OnlineStatus.values()))
@@ -519,7 +518,7 @@ class CodecTest {
     void presenceUpdate() {
         final Catnip mockNip = mockNip();
         final PresenceUpdate presenceUpdate = PresenceUpdateImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .idAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
                 .status(random(OnlineStatus.values()))
@@ -538,7 +537,7 @@ class CodecTest {
     void reactionUpdate() {
         final Catnip mocknip = mockNip();
         final ReactionUpdate reactionUpdate = ReactionUpdateImpl.builder()
-                .catnip(mocknip)
+                .injectCatnip(mocknip)
                 .userId(randomPositiveLongAsString())
                 .channelId(randomPositiveLongAsString())
                 .messageId(randomPositiveLongAsString())
@@ -553,7 +552,7 @@ class CodecTest {
     void ready() {
         final Catnip mockNip = mockNip();
         final Ready ready = ReadyImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .version(3)
                 .user(user(mockNip))
                 .trace(Arrays.asList(randomPositiveLongAsString(), randomPositiveLongAsString()))
@@ -566,7 +565,7 @@ class CodecTest {
     @Test
     void resumed() {
         final Resumed resumed = ResumedImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .trace(Arrays.asList(randomPositiveLongAsString(), randomPositiveLongAsString()))
                 .build();
         
@@ -576,7 +575,7 @@ class CodecTest {
     @Test
     void role() {
         final Role role = RoleImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
                 .name("This is a role")
@@ -595,7 +594,7 @@ class CodecTest {
     void textChannel() {
         final Catnip mockNip = mockNip();
         final TextChannel textChannel = TextChannelImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .idAsLong(randomPositiveLong())
                 .name("This is a text channel")
                 .guildIdAsLong(randomPositiveLong())
@@ -613,7 +612,7 @@ class CodecTest {
     @Test
     void typingUser() {
         final TypingUser typingUser = TypingUserImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .channelIdAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
@@ -626,7 +625,7 @@ class CodecTest {
     @Test
     void unavailableGuild() {
         final UnavailableGuild unavailableGuild = UnavailableGuildImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .unavailable(ThreadLocalRandom.current().nextBoolean())
                 .build();
@@ -637,7 +636,7 @@ class CodecTest {
     @Test
     void unicodeEmoji() {
         final UnicodeEmoji unicodeEmoji = UnicodeEmojiImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .name("thonk")
                 .requiresColons(ThreadLocalRandom.current().nextBoolean())
                 .build();
@@ -648,7 +647,7 @@ class CodecTest {
     @Test
     void userDMChannel() {
         final UserDMChannel userDMChannel = UserDMChannelImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .idAsLong(randomPositiveLong())
                 .userIdAsLong(randomPositiveLong())
                 .build();
@@ -665,7 +664,7 @@ class CodecTest {
     void voiceChannel() {
         final Catnip mockNip = mockNip();
         final VoiceChannel voiceChannel = VoiceChannelImpl.builder()
-                .catnip(mockNip)
+                .injectCatnip(mockNip)
                 .idAsLong(randomPositiveLong())
                 .name("This is a voice channel")
                 .guildIdAsLong(randomPositiveLong())
@@ -682,7 +681,7 @@ class CodecTest {
     @Test
     void voiceRegion() {
         final VoiceRegion voiceRegion = VoiceRegionImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .id(randomPositiveLongAsString())
                 .name("This is a voice region")
                 .vip(ThreadLocalRandom.current().nextBoolean())
@@ -697,7 +696,7 @@ class CodecTest {
     @Test
     void voiceServerUpdate() {
         final VoiceServerUpdate voiceServerUpdate = VoiceServerUpdateImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .guildIdAsLong(randomPositiveLong())
                 .token("this is a top secret token")
                 .endpoint(url())
@@ -709,7 +708,7 @@ class CodecTest {
     @Test
     void voiceState() {
         final VoiceState voiceState = VoiceStateImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .guildIdAsLong(randomPositiveLong())
                 .channelIdAsLong(randomPositiveLong())
                 .userIdAsLong(randomPositiveLong())
@@ -732,7 +731,7 @@ class CodecTest {
     @Test
     void webhooksUpdate() {
         final WebhooksUpdate webhooksUpdate = WebhooksUpdateImpl.builder()
-                .catnip(mockNip())
+                .injectCatnip(mockNip())
                 .channelIdAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
                 .build();
@@ -774,7 +773,7 @@ class CodecTest {
     
     private ApplicationOwner applicationOwner(final Catnip catnip) {
         return ApplicationOwnerImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .avatar("kotlin4lyfe.jpeg")
                 .bot(ThreadLocalRandom.current().nextBoolean())
                 .discriminator("0001")
@@ -785,7 +784,7 @@ class CodecTest {
     
     private Attachment attachment(final Catnip catnip) {
         return AttachmentImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .fileName("neko.png")
                 .size(256)
@@ -798,7 +797,7 @@ class CodecTest {
     
     private AuditLogChange auditLogChange(final Catnip catnip) {
         return AuditLogChangeImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .newValue("This is a new value")
                 .oldValue("This is an old value")
                 .key("This is a key")
@@ -807,7 +806,7 @@ class CodecTest {
     
     private CustomEmoji customEmoji(final Catnip catnip) {
         return CustomEmojiImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
                 .name("SmilingBlackGuyWithQuestionMarks")
@@ -873,7 +872,7 @@ class CodecTest {
     
     private InviteChannel inviteChannel(final Catnip catnip) {
         return InviteChannelImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .name("Channel McChannelface")
                 .type(random(ChannelType.values()))
@@ -882,7 +881,7 @@ class CodecTest {
     
     private Inviter inviter(final Catnip catnip) {
         return InviterImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .username("Invity McInviterface")
                 .discriminator("9999")
@@ -892,7 +891,7 @@ class CodecTest {
     
     private InviteGuild inviteGuild(final Catnip catnip) {
         return InviteGuildImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .name("Guildy McGuildface")
                 .icon(imageUrl())
@@ -904,7 +903,7 @@ class CodecTest {
     
     private Member member(final Catnip catnip) {
         return MemberImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
                 .nick("Nik")
@@ -917,7 +916,7 @@ class CodecTest {
     
     private PermissionOverride permissionOverride(final Catnip catnip) {
         return PermissionOverrideImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .type(random(OverrideType.values()))
                 .allowRaw(8)
@@ -935,7 +934,7 @@ class CodecTest {
     
     private UnavailableGuild unavailableGuild(final Catnip catnip) {
         return UnavailableGuildImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .idAsLong(randomPositiveLong())
                 .unavailable(ThreadLocalRandom.current().nextBoolean())
                 .build();
@@ -943,7 +942,7 @@ class CodecTest {
     
     private User user(final Catnip catnip) {
         return UserImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .avatar("banana.gif")
                 .bot(ThreadLocalRandom.current().nextBoolean())
                 .discriminator("0007")
@@ -954,7 +953,7 @@ class CodecTest {
     
     private Webhook webhook(final Catnip catnip) {
         return WebhookImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .avatar("bait.jpeg")
                 .channelIdAsLong(randomPositiveLong())
                 .guildIdAsLong(randomPositiveLong())
@@ -967,7 +966,7 @@ class CodecTest {
     
     private OptionalEntryInfo optionalEntryInfo(final Catnip catnip) {
         return MemberPruneInfoImpl.builder()
-                .catnip(catnip)
+                .injectCatnip(catnip)
                 .removedMembersCount(69)
                 .deleteMemberDays(42)
                 .build();

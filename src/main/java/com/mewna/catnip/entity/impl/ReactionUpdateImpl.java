@@ -50,7 +50,7 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class ReactionUpdateImpl implements ReactionUpdate, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String userId;
     private String channelId;
@@ -58,8 +58,9 @@ public class ReactionUpdateImpl implements ReactionUpdate, RequiresCatnip {
     private String guildId;
     private Emoji emoji;
     
+    @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
         if(emoji instanceof RequiresCatnip) {
             ((RequiresCatnip) emoji).catnip(catnip);
         }

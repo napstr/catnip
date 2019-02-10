@@ -29,7 +29,7 @@ package com.mewna.catnip.entity.guild;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.mewna.catnip.entity.Snowflake;
-import com.mewna.catnip.entity.impl.UnavailableGuildImpl;
+import org.immutables.value.Value.Immutable;
 
 import javax.annotation.CheckReturnValue;
 
@@ -40,6 +40,7 @@ import javax.annotation.CheckReturnValue;
  * @since 10/4/18.
  */
 @JsonDeserialize(as = UnavailableGuildImpl.class)
+@Immutable
 public interface UnavailableGuild extends Snowflake {
     /**
      * @return Whether the guild is unavailable.

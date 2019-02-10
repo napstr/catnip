@@ -51,14 +51,14 @@ import javax.annotation.Nullable;
 @AllArgsConstructor
 public class UserDMChannelImpl implements UserDMChannel, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private long idAsLong;
     private long userIdAsLong;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override
@@ -79,6 +79,6 @@ public class UserDMChannelImpl implements UserDMChannel, RequiresCatnip {
     @Nullable
     @Override
     public User recipient() {
-        return catnip.cache().user(userIdAsLong);
+        return injectCatnip.cache().user(userIdAsLong);
     }
 }

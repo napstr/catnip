@@ -32,13 +32,16 @@ import com.mewna.catnip.Catnip;
 import com.mewna.catnip.CatnipOptions;
 import com.mewna.catnip.cache.CacheFlag;
 import com.mewna.catnip.cache.EntityCacheWorker;
+import com.mewna.catnip.entity.guild.GuildImpl;
+import com.mewna.catnip.entity.guild.UnavailableGuildImpl;
 import com.mewna.catnip.entity.impl.*;
-import com.mewna.catnip.entity.impl.PresenceImpl.ActivityImpl;
 import com.mewna.catnip.entity.misc.GatewayInfo;
+import com.mewna.catnip.entity.user.ActivityImpl;
 import com.mewna.catnip.entity.user.Presence;
 import com.mewna.catnip.entity.user.Presence.Activity;
 import com.mewna.catnip.entity.user.Presence.ActivityType;
 import com.mewna.catnip.entity.user.Presence.OnlineStatus;
+import com.mewna.catnip.entity.user.PresenceImpl;
 import com.mewna.catnip.entity.user.User;
 import com.mewna.catnip.entity.util.Permission;
 import com.mewna.catnip.extension.Extension;
@@ -318,7 +321,7 @@ public class CatnipImpl implements Catnip {
                 .build()
                 : null;
         presence(PresenceImpl.builder()
-                .catnip(this)
+                .injectCatnip(this)
                 .status(stat)
                 .activity(activity)
                 .build());
@@ -435,6 +438,7 @@ public class CatnipImpl implements Catnip {
         return cache;
     }
     
+    @Override
     @Nonnull
     public Catnip connect() {
         shardManager.start();

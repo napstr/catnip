@@ -49,14 +49,14 @@ import javax.annotation.Nonnull;
 @AllArgsConstructor
 public class UnicodeEmojiImpl implements UnicodeEmoji, RequiresCatnip {
     @JsonIgnore
-    private transient Catnip catnip;
+    private transient Catnip injectCatnip;
     
     private String name;
     private boolean requiresColons;
     
     @Override
     public void catnip(@Nonnull final Catnip catnip) {
-        this.catnip = catnip;
+        this.injectCatnip = catnip;
     }
     
     @Override
